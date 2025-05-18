@@ -95,6 +95,9 @@ class RAAGHomomorphism:
     def _verify_homomorphism(self):
         for g1 in self.domain_raag.generators:
             for g2 in self.domain_raag.generators:
+                # Пропускаем проверку для одинаковых образующих
+                if g1 == g2:
+                    continue
                 if self.domain_raag.are_commuting(g1, g2):
                     image_g1 = RAAGElement(self.codomain_raag, self.mapping.get(g1, []))
                     image_g2 = RAAGElement(self.codomain_raag, self.mapping.get(g2, []))
@@ -105,7 +108,7 @@ class RAAGHomomorphism:
     def _do_elements_commute(self, elem1, elem2):
         combined1 = RAAGElement(self.codomain_raag, elem1.word + elem2.word)
         combined2 = RAAGElement(self.codomain_raag, elem2.word + elem1.word)
-        return combined1 == combined2
+        return combined1.word == combined2.word  # Прямое сравнение слов после нормализации
 
     # Применяет гомоморфизм к элементу
     def apply(self, element):
